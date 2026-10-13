@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .speed-btn.active {
+            background-color: #3d3898;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col justify-between antialiased">
+
+    <!-- HEADER & NAVIGATION SECTION -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="font-bold text-xl tracking-tight text-slate-800 hover:text-slate-600 transition-colors">
+                MySite
+            </a>
+            <nav>
+                <ul class="flex space-x-6 text-sm font-medium">
+                    <li><a href="index.html" class="text-slate-600 hover:text-slate-900 transition-colors">Home</a></li>
+                    <li><a href="about.html" class="text-blue-600 font-semibold">About</a></li>
+                    <li><a href="untitled1.html" class="text-blue-600 font-semibold">Untitled 1</a></li>
+                    <li><a href="testpage.html" class="text-indigo-600 font-semibold transition-colors">Testpage</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER SECTION -->
+    <main class="max-w-3xl mx-auto w-full px-6 py-12 flex-grow">
+        <section class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-slate-200">
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-6">
+                Home
+            </h1>
+            
+            <div class="prose max-w-none text-slate-700 leading-relaxed space-y-6">
+                <!-- Status Banner -->
+                <p class="text-lg bg-amber-50 border-l-4 border-amber-400 p-4 text-amber-900 rounded-r-md font-medium">
+                    This website is under development by Precastfungus79!
+                </p>
+
+                <!-- GAME CONTAINER UI -->
+                <div class="flex flex-col items-center bg-white p-6 rounded-xl shadow-inner text-black not-prose">
+                    
+                    <!-- Score Bar -->
+                    <div class="w-full max-w-[408px] flex justify-between items-center mb-4 text-sm font-semibold">
+                        <div>Score: <span id="score" class="text-black">0</span></div>
+                        <div>High Score: <span id="high-score" class="text-black">0</span></div>
+                    </div>
+
+                    <!-- Canvas Frame & Overlay -->
+    <div class="relative w-[408px] h-[408px] mx-auto">
+    
+    <!-- Canvas element -->
+    <canvas id="gameCanvas" width="400" height="400" class="bg-white rounded-lg border-4 border-slate-900 shadow-md block"></canvas>
+
+    <!-- OVERLAY: Centered overlay menu -->
+    <div id="overlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center p-6 text-center text-white">
+        <h2 id="overlay-title" class="text-2xl font-bold mb-2">Snake Game</h2>
+        <p id="overlay-subtitle" class="text-slate-300 text-sm mb-6">Use WASD or Arrow keys to move</p>
+        <button id="start-btn" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2 px-6 rounded-lg transition-colors border border-slate-700">
+            Start Game
+        </button>
+    </div>
+
+    </div>
+
+                    <!-- Speed Controls -->
+                    <div class="mt-4 flex items-center gap-2">
+    <span class="text-xs text-slate-500 font-medium">Speed:</span>
+    <button data-speed="100" class="speed-btn px-3 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 transition-colors">Slow</button>
+    <button data-speed="75" class="speed-btn active px-3 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 transition-colors">Medium</button>
+    <button data-speed="50" class="speed-btn px-3 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 transition-colors">Fast</button>
+</div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER SECTION -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+        <div class="max-w-4xl mx-auto px-6 text-center text-sm text-slate-500">
+            &copy; 2026 MySite. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- GAME LOGIC SCRIPT -->
+   <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.getElementById("score");
+    const highScoreEl = document.getElementById("high-score");
+    const overlay = document.getElementById("overlay");
+    const overlayTitle = document.getElementById("overlay-title");
+    const overlaySubtitle = document.getElementById("overlay-subtitle");
+    const startBtn = document.getElementById("start-btn");
+    const speedBtns = document.querySelectorAll(".speed-btn");
+
+    const gridSize = 20; // 20x20 grid
+    const tileCount = canvas.width / gridSize;
+    let gameLoop = null;
+    let speed = 75; // Default speed: Medium (75ms)
+
+    let snake = [];
+    let dx = gridSize;
+    let dy = 0;
+    let food = { x: 0, y: 0 };
+    let score = 0;
+    let highScore = 0;
+    let gameActive = false;
+
+    // Speed Selector Event Listeners
+    speedBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            speedBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            speed = parseInt(btn.dataset.speed);
+        });
+    });
+
+    function startGame() {
+        snake = [
+            { x: 10 * gridSize, y: 10 * gridSize },
+            { x: 9 * gridSize, y: 10 * gridSize },
+            { x: 8 * gridSize, y: 10 * gridSize }
+        ];
+        dx = gridSize;
+        dy = 0;
+        score = 0;
+        scoreEl.textContent = score;
+        spawnFood();
+        gameActive = true;
+        overlay.classList.add("hidden");
+
+        if (gameLoop) clearInterval(gameLoop);
+        gameLoop = setInterval(update, speed);
+    }
+
+    function spawnFood() {
+        food.x = Math.floor(Math.random() * tileCount) * gridSize;
+        food.y = Math.floor(Math.random() * tileCount) * gridSize;
+
+        // Ensure food doesn't spawn inside snake body
+        snake.forEach(segment => {
+            if (segment.x === food.x && segment.y === food.y) spawnFood();
+        });
+    }
+
+    function update() {
+        const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+
+        // Wall collision
+        if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+            return gameOver();
+        }
+
+        // Self collision
+        for (let i = 0; i < snake.length; i++) {
+            if (snake[i].x === head.x && snake[i].y === head.y) return gameOver();
+        }
+
+        snake.unshift(head);
+
+        // Eat food
+        if (head.x === food.x && head.y === food.y) {
+            score += 10;
+            scoreEl.textContent = score;
+            if (score > highScore) {
+                highScore = score;
+                highScoreEl.textContent = highScore;
+            }
+            spawnFood();
+        } else {
+            snake.pop();
+        }
+
+        draw();
+    }
+
+    function draw() {
+        // Clear screen (White background matching page theme)
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw food (Red square)
+        ctx.fillStyle = "#dc2626";
+        ctx.fillRect(food.x + 1, food.y + 1, gridSize - 2, gridSize - 2);
+
+        // Draw snake (Dark slate head, Indigo body)
+        snake.forEach((segment, index) => {
+            ctx.fillStyle = index === 0 ? "#0f172a" : "#4f46e5";
+            ctx.fillRect(segment.x + 1, segment.y + 1, gridSize - 2, gridSize - 2);
+        });
+    }
+
+    function gameOver() {
+        clearInterval(gameLoop);
+        gameActive = false;
+        overlayTitle.textContent = "Game Over!";
+        overlaySubtitle.textContent = `Final Score: ${score}`;
+        startBtn.textContent = "Play Again";
+        overlay.classList.remove("hidden");
+    }
+
+    document.addEventListener("keydown", (e) => {
+        // Prevent page scrolling when using arrow keys
+        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(e.code)) {
+            e.preventDefault();
+        }
+
+        if (!gameActive && e.code === "Space") {
+            startGame();
+            return;
+        }
+
+        // Direction controls (prevent moving backwards into body)
+        if ((e.key === "ArrowUp" || e.key === "w" || e.key === "W") && dy === 0) {
+            dx = 0; dy = -gridSize;
+        } else if ((e.key === "ArrowDown" || e.key === "s" || e.key === "S") && dy === 0) {
+            dx = 0; dy = gridSize;
+        } else if ((e.key === "ArrowLeft" || e.key === "a" || e.key === "A") && dx === 0) {
+            dx = -gridSize; dy = 0;
+        } else if ((e.key === "ArrowRight" || e.key === "d" || e.key === "D") && dx === 0) {
+            dx = gridSize; dy = 0;
+        }
+    });
+
+    startBtn.addEventListener("click", startGame);
+</script>
+
+</body>
+</html>
