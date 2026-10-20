@@ -142,9 +142,15 @@
     
     let gameActive = false;
 
-    // Speed Selector Event Listeners
-   speedBtns.forEach(btn => {
+  // Add a variable to track the speed of the currently running game
+let gameSpeedKey = 75; 
+
+// Speed Selector Event Listeners
+speedBtns.forEach(btn => {
     btn.addEventListener("click", () => {
+        // Prevent changing speeds mid-game to avoid score exploitation
+        if (gameActive) return;
+
         speedBtns.forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
 
@@ -152,7 +158,6 @@
         currentSpeedKey = speed;
 
         highScoreEl.textContent = highScores[currentSpeedKey];
-
         // If a game is currently running, reset the timer with the new speed
         if (gameActive) {
             if (gameLoop) clearInterval(gameLoop);
