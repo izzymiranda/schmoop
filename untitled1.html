@@ -143,15 +143,20 @@
     let gameActive = false;
 
     // Speed Selector Event Listeners
-    speedBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            speedBtns.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
+   speedBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+        speedBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
 
-            speed = parseInt(btn.dataset.speed);
-            currentSpeedKey = speed;
+        speed = parseInt(btn.dataset.speed);
+        currentSpeedKey = speed;
 
-            highScoreEl.textContent = highScores[currentSpeedKey];
+        highScoreEl.textContent = highScores[currentSpeedKey];
+
+        // If a game is currently running, reset the timer with the new speed
+        if (gameActive) {
+            if (gameLoop) clearInterval(gameLoop);
+            gameLoop = setInterval(update, speed);
         });
     });
 
