@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>untitled1</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Supabase JS Client SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -98,6 +102,14 @@
 
     <!-- GAME LOGIC SCRIPT -->
   <script>
+
+    // Initialize Supabase Client       
+    const SUPABASE_URL = 'https://wxygbfnbillgtolwonda.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4eWdiZm5iaWxsZ3RvbHdvbmRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4Nzg0NTksImV4cCI6MjEwODQ1NDQ1OX0.uWkKfSolaVE_LkVPC7UkkcofKW0uyZxoYrTYumBtVog';
+
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const scoreEl = document.getElementById("score");
@@ -237,14 +249,29 @@
         });
     }
 
-    function gameOver() {
-        clearInterval(gameLoop);
-        gameActive = false;
-        overlayTitle.textContent = "Game Over!";
-        overlaySubtitle.textContent = `Final Score: ${score}`;
-        startBtn.textContent = "Play Again";
-        overlay.classList.remove("hidden");
-    }
+    async function gameOver() {
+            clearInterval(gameLoop);
+            gameActive = false;
+
+            // Ask for player name and submit to Supabase
+            let playerName = prompt("Game Over! Enter your name for the leaderboard:") || "Anonymous";
+            
+            try {
+                const { error } = await db
+                    .from('leaderboard')
+                    .insert([
+                        { player_name: playerName, score: score, speed_mode: gameSpeedKey }
+                    ]);
+                if (error) console.error("Error saving score:", error);
+            } catch (err) {
+                console.error("Network error:", err);
+            }
+
+            overlayTitle.textContent = "Game Over!";
+            overlaySubtitle.textContent = `Final Score: ${score}`;
+            startBtn.textContent = "Play Again";
+            overlay.classList.remove("hidden");
+        }
 
     document.addEventListener("keydown", (e) => {
         // Prevent page scrolling when using arrow keys
