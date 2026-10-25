@@ -260,7 +260,7 @@
                 const { error } = await db
                     .from('leaderboard')
                     .insert([
-                        { player_name: playerName, score: score, speed_mode: gameSpeedKey }
+                        { player_name: playerName, score: score, speed_mode: speed }
                     ]);
                 if (error) console.error("Error saving score:", error);
             } catch (err) {
