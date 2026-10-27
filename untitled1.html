@@ -317,17 +317,21 @@
         if (confirm("Are you sure you want to clear your local high scores?")) {
             // Clear from browser storage
             localStorage.removeItem("snakeHighScores");
+
+            
             
             // Reset the highScores object back to zero for all speeds
             highScores = {
                 100: 0,
                 75: 0,
-                50: 0
+                50: 0    
             };
-            
-            // Update the UI text instantly
+                      // Update the UI text instantly
             highScoreEl.textContent = highScores[currentSpeedKey];
             console.log("Local high scores cleared!");
+
+            //force refresh
+            location.reload();
         }
     });
 
