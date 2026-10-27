@@ -157,6 +157,7 @@
     
     
     let gameActive = false;
+    let hasBeatenHighScore = false; // Add this line
 
     // Speed Selector Event Listeners
     speedBtns.forEach(btn => {
@@ -181,6 +182,7 @@
         dy = 0;
         score = 0;
         scoreEl.textContent = score;
+        hasBeatenHighScore = false; // <--- Add this line here
         spawnFood();
         gameActive = true;
         overlay.classList.add("hidden");
@@ -224,6 +226,8 @@
               highScoreEl.textContent = highScores[currentSpeedKey]; // Update UI
        
               localStorage.setItem("snakeHighScores", JSON.stringify(highScores));
+
+              hasBeatenHighScore = true; // <--- Add this line here  
                     //OLD
                            // if (score > highScore) {
                            //     highScore = score;
@@ -263,7 +267,7 @@
             overlay.classList.remove("hidden");
 
             // Only submit if it beats the current high score and is greater than 0
-            if (score > highScores[currentSpeedKey] && score > 0) {
+            if (hasBeatenHighScore && score > 0) {
                 let playerName = prompt("New High Score! Enter your name for the leaderboard:") || "Anonymous";
                 
                 try {
