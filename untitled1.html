@@ -249,28 +249,37 @@
         });
     }
 
-    async function gameOver() {
+   async function gameOver() {
             clearInterval(gameLoop);
             gameActive = false;
-
-            // Ask for player name and submit to Supabase
-            let playerName = prompt("Game Over! Enter your name for the leaderboard:") || "Anonymous";
-            
-            try {
-                const { error } = await db
-                    .from('leaderboard')
-                    .insert([
-                        { player_name: playerName, score: score, speed_mode: speed }
-                    ]);
-                if (error) console.error("Error saving score:", error);
-            } catch (err) {
-                console.error("Network error:", err);
-            }
 
             overlayTitle.textContent = "Game Over!";
             overlaySubtitle.textContent = `Final Score: ${score}`;
             startBtn.textContent = "Play Again";
             overlay.classList.remove("hidden");
+
+            // Only submit if it beats the current high score and is greater than 0
+            if (score > highScores[currentSpeedKey] && score > 0) {
+                let playerName = prompt("New High Score! Enter your name for the leaderboard:") || "Anonymous";
+                
+                try {
+                    const { data, error } = await db
+                        .from('leaderboard')
+                        .insert([
+                            { player_name: playerName, score: score, speed_mode: speed }
+                        ]);
+                    
+                    if (error) {
+                        console.error("Supabase insert error:", error.message);
+                        alert("Could not save to leaderboard: " + error.message);
+                    } else {
+                        console.log("Score successfully saved to Supabase!", data);
+                    }
+                } catch (err) {
+                    console.error("Network error:", err);
+                }
+            }
+        }
         }
 
     document.addEventListener("keydown", (e) => {
