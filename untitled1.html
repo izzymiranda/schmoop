@@ -310,19 +310,23 @@
     });
 
 
-    // Reset High Score Button
-   const resetHighScoreBtn = document.getElementById("reset-high-score-btn");
+  // Reset High Score Button
+    const resetHighScoreBtn = document.getElementById("reset-high-score-btn");
     
     resetHighScoreBtn.addEventListener("click", () => {
         if (confirm("Are you sure you want to clear your local high scores?")) {
-            // 1. Wipe it completely from browser storage
+            // 1. Completely clear browser storage
             localStorage.removeItem("snakeHighScores");
-            localStorage.clear(); // Clears any other stray local data just in case
+            localStorage.clear();
             
-            // 2. Alert the user so they know it worked before reloading
-            alert("High scores cleared! Reloading page...");
-            
-            // 3. Force a hard reload
+            // 2. Explicitly reset the in-memory object to 0 immediately
+            highScores[100] = 0;
+            highScores[75] = 0;
+            highScores[50] = 0;
+            highScoreEl.textContent = highScores[currentSpeedKey];
+
+            // 3. Alert and force a true hard reload bypassing cache
+            alert("High scores cleared!");
             window.location.href = window.location.pathname + '?nocache=' + new Date().getTime();
         }
     });
