@@ -95,6 +95,34 @@
                 </div>
             </div>
         </section>
+
+
+    <!-- LEADERBOARD UI CONTAINER -->
+    <div class="mt-8 bg-white p-6 rounded-xl border border-slate-200 shadow-sm w-full max-w-[408px] mx-auto not-prose">
+        <h3 class="text-lg font-bold text-slate-900 mb-4 text-center">Top 3 Leaderboard</h3>
+        
+        <!-- Category Headers -->
+        <div class="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-slate-600 mb-3 border-b pb-2">
+            <div>Slow</div>
+            <div>Medium</div>
+            <div>Fast</div>
+        </div>
+
+        <!-- Top 3 Lists Grid -->
+        <div class="grid grid-cols-3 gap-2 text-center text-sm">
+            <ul id="lb-100" class="space-y-1 text-slate-700">
+                <li class="text-slate-400 italic text-xs">Loading...</li>
+            </ul>
+            <ul id="lb-75" class="space-y-1 text-slate-700">
+                <li class="text-slate-400 italic text-xs">Loading...</li>
+            </ul>
+            <ul id="lb-50" class="space-y-1 text-slate-700">
+                <li class="text-slate-400 italic text-xs">Loading...</li>
+            </ul>
+        </div>
+    </div>
+
+
     </main>
 
     <!-- FOOTER SECTION -->
@@ -268,9 +296,10 @@
 
             // Only submit if it beats the current high score and is greater than 0
             if (hasBeatenHighScore && score > 0) {
-                let playerName = prompt("New High Score! Enter your name for the leaderboard:") || "Anonymous";
+               let rawName = prompt("New High Score! Enter your name (max 3 chars):") || "Anonymous";
+               let playerName = rawName.trim().slice(0, 3) || "Anonymous";
                 
-                try {
+               try {
                     const { data, error } = await db
                         .from('leaderboard')
                         .insert([
@@ -336,7 +365,53 @@
     });
       
     startBtn.addEventListener("click", startGame);
+
+    // Function to fetch and render Top 3 Leaderboards from Supabase
+    async function loadLeaderboards() {
+        const speeds = [100, 75, 50];
+
+        for (const spd of speeds) {
+            const listEl = document.getElementById(`lb-${spd}`);
+            
+            try {
+                const { data, error } = await db
+                    .from('leaderboard')
+                    .select('player_name, score')
+                    .eq('speed_mode', spd)
+                    .order('score', { ascending: false })
+                    .limit(3);
+
+                if (error) {
+                    console.error(`Error fetching leaderboard for ${spd}:`, error.message);
+                    listEl.innerHTML = `<li class="text-red-400 text-xs">Error loading</li>`;
+                    continue;
+                }
+
+                if (!data || data.length === 0) {
+                    listEl.innerHTML = `<li class="text-slate-400 text-xs italic">No scores yet</li>`;
+                    continue;
+                }
+
+                // Render top 3 list items
+                listEl.innerHTML = data.map((entry, index) => `
+                    <li class="truncate">
+                        <span class="font-bold text-slate-400 text-xs">#${index + 1}</span> 
+                        <span class="font-medium text-slate-800">${entry.player_name}</span>: 
+                        <span class="text-indigo-600 font-semibold">${entry.score}</span>
+                    </li>
+                `).join('');
+
+            } catch (err) {
+                console.error(`Network error loading leaderboard for ${spd}:`, err);
+            }
+        }
+    }
+
+    // Call it right when the page loads to populate the board
+    loadLeaderboards();
 </script>
 
+</body>
+</html>
 </body>
 </html>
