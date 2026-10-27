@@ -311,30 +311,22 @@
 
 
     // Reset High Score Button
-    const resetHighScoreBtn = document.getElementById("reset-high-score-btn");
+   const resetHighScoreBtn = document.getElementById("reset-high-score-btn");
     
     resetHighScoreBtn.addEventListener("click", () => {
         if (confirm("Are you sure you want to clear your local high scores?")) {
-            // Clear from browser storage
+            // 1. Wipe it completely from browser storage
             localStorage.removeItem("snakeHighScores");
-
+            localStorage.clear(); // Clears any other stray local data just in case
             
+            // 2. Alert the user so they know it worked before reloading
+            alert("High scores cleared! Reloading page...");
             
-            // Reset the highScores object back to zero for all speeds
-            highScores = {
-                100: 0,
-                75: 0,
-                50: 0    
-            };
-                      // Update the UI text instantly
-            highScoreEl.textContent = highScores[currentSpeedKey];
-            console.log("Local high scores cleared!");
-
-            //force refresh
-            location.reload();
+            // 3. Force a hard reload
+            window.location.href = window.location.pathname + '?nocache=' + new Date().getTime();
         }
     });
-
+      
     startBtn.addEventListener("click", startGame);
 </script>
 
