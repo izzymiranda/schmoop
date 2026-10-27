@@ -86,7 +86,11 @@
     <button data-speed="100" class="speed-btn px-3 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 transition-colors">Slow</button>
     <button data-speed="75" class="speed-btn active px-3 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 transition-colors">Medium</button>
     <button data-speed="50" class="speed-btn px-3 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 transition-colors">Fast</button>
-</div>
+
+    <button id="reset-high-score-btn" class="mt-4 px-3 py-1 text-xs font-semibold rounded-md bg-red-100 text-red-700 border border-red-300 hover:bg-red-200 transition-colors">
+    Reset High Score
+</button>          
+                    </div>
 
                 </div>
             </div>
@@ -302,6 +306,28 @@
             dx = -gridSize; dy = 0;
         } else if ((e.key === "ArrowRight" || e.key === "d" || e.key === "D") && dx === 0) {
             dx = gridSize; dy = 0;
+        }
+    });
+
+
+    // Reset High Score Button
+    const resetHighScoreBtn = document.getElementById("reset-high-score-btn");
+    
+    resetHighScoreBtn.addEventListener("click", () => {
+        if (confirm("Are you sure you want to clear your local high scores?")) {
+            // Clear from browser storage
+            localStorage.removeItem("snakeHighScores");
+            
+            // Reset the highScores object back to zero for all speeds
+            highScores = {
+                100: 0,
+                75: 0,
+                50: 0
+            };
+            
+            // Update the UI text instantly
+            highScoreEl.textContent = highScores[currentSpeedKey];
+            console.log("Local high scores cleared!");
         }
     });
 
