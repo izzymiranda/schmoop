@@ -294,29 +294,62 @@
             startBtn.textContent = "Play Again";
             overlay.classList.remove("hidden");
 
-            // Only submit if it beats the current high score and is greater than 0
-            if (hasBeatenHighScore && score > 0) {
-               let rawName = prompt("New High Score! Enter your name (max 3 chars):") || "Anonymous";
-               let playerName = rawName.trim().slice(0, 3) || "Anonymous";
-                
-               try {
-                    const { data, error } = await db
+            
+            // Only attempt leaderboard entry if score is above 0
+        if (score > 0) {
+            try {
+                // 1. Fetch the top 3 scores for the current speed mode
+                const { data: topScores, error: fetchErr } = await db
+                    .from('leaderboard')
+                    .select('score')
+                    .eq('speed_mode', speed)
+                    .order('score', { ascending: false })
+                    .limit(3);
+
+                if (fetchErr) {
+                    console.error("Error checking leaderboard threshold:", fetchErr.message);
+                    return;
+                }
+
+                // 2. Determine if the score qualifies for Top 3
+                let qualifiesForTop3 = false;
+
+                if (!topScores || topScores.length < 3) {
+                    // Less than 3 entries exist in this category, so ANY score > 0 qualifies!
+                    qualifiesForTop3 = true;
+                } else {
+                    // Check if current score beats the 3rd place score (the last item in topScores)
+                    const thirdPlaceScore = topScores[2].score;
+                    if (score > thirdPlaceScore) {
+                        qualifiesForTop3 = true;
+                    }
+                }
+
+                // 3. Prompt for name ONLY if qualified
+                if (qualifiesForTop3) {
+                    let rawName = prompt("TOP 3 HIGH SCORE! Enter your name (max 7 chars):") || "Anonymous";
+                    let playerName = rawName.trim().slice(0, 7) || "Anonymous";
+
+                    const { error: insertErr } = await db
                         .from('leaderboard')
                         .insert([
                             { player_name: playerName, score: score, speed_mode: speed }
                         ]);
-                    
-                    if (error) {
-                        console.error("Supabase insert error:", error.message);
-                        alert("Could not save to leaderboard: " + error.message);
+
+                    if (insertErr) {
+                        console.error("Supabase insert error:", insertErr.message);
                     } else {
-                        console.log("Score successfully saved to Supabase!", data);
+                        console.log("Top 3 score saved!");
+                        loadLeaderboards(); // Refresh leaderboard UI instantly
                     }
-                } catch (err) {
-                    console.error("Network error:", err);
                 }
+
+            } catch (err) {
+                console.error("Error during high score evaluation:", err);
             }
+        
         }
+    }
         
 
     document.addEventListener("keydown", (e) => {
@@ -411,7 +444,5 @@
     loadLeaderboards();
 </script>
 
-</body>
-</html>
 </body>
 </html>
