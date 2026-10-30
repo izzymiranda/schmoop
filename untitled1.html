@@ -20,39 +20,212 @@
             background-color: #3d3898;
             color: #ffffff;
         }
+            /* Auth Buttons */
+.arcade-btn {
+    background-color: #0f172a;
+    color: #ffffff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.arcade-btn:hover {
+    background-color: #1e293b;
+}
+
+.arcade-btn-small {
+    background-color: #ef4444;
+    color: #ffffff;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.arcade-btn-small:hover {
+    background-color: #dc2626;
+}
+
+/* Auth Modal Popup */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    padding: 24px;
+    width: 320px;
+    border-radius: 12px;
+    color: #ffffff;
+    position: relative;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.close-modal:hover {
+    color: #ffffff;
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #ffffff;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: #10b981;
+}
+
+.arcade-btn-primary {
+    background-color: #10b981;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.arcade-btn-primary:hover {
+    background-color: #059669;
+}
+
+.auth-toggle-text {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.auth-toggle-text a {
+    color: #34d399;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-toggle-text a:hover {
+    text-decoration: underline;
+}
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col justify-between antialiased">
 
     <!-- HEADER & NAVIGATION SECTION -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="font-bold text-xl tracking-tight text-slate-800 hover:text-slate-600 transition-colors">
-                MySite
-            </a>
-            <nav>
-                <ul class="flex space-x-6 text-sm font-medium">
-                    <li><a href="index.html" class="text-slate-600 hover:text-slate-900 transition-colors">Home</a></li>
-                    <li><a href="About.html" class="text-blue-600 font-semibold">About</a></li>
-                    <li><a href="untitled1.html" class="text-blue-600 font-semibold">Untitled 1</a></li>
-                    <li><a href="Testpage.html" class="text-indigo-600 font-semibold transition-colors">Testpage</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="index.html" class="font-bold text-xl tracking-tight text-slate-900">
+            MySite
+        </a>
+        <nav>
+            <ul class="flex items-center space-x-6 font-medium">
+                <li><a href="index.html" class="text-slate-600 hover:text-slate-900">Home</a></li>
+                <li><a href="About.html" class="text-slate-600 hover:text-slate-900">About</a></li>
+                <li><a href="untitled1.html" class="text-slate-900 font-semibold">Snake</a></li>
+                <li><a href="Testpage.html" class="text-slate-600 hover:text-slate-900">Test</a></li>
+                
+                <!-- AUTH BUTTON / USER STATS DISPLAY -->
+                <li>
+                    <div id="auth-container" class="inline-flex items-center">
+                        <button id="auth-btn" onclick="openAuthModal()" class="arcade-btn">
+                            Sign In / Register
+                        </button>
+                        <div id="user-profile-display" style="display: none;" class="flex items-center space-x-3 text-sm">
+                            <span id="display-username" class="font-bold text-slate-800">Player</span>
+                            <span id="display-apples" class="text-emerald-600 font-semibold">🍎 0</span>
+                            <button onclick="handleLogout()" class="arcade-btn-small">Log Out</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
 
     <!-- MAIN CONTAINER SECTION -->
     <main class="max-w-3xl mx-auto w-full px-6 py-12 flex-grow">
         <section class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-slate-200">
             <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-6">
-                Snake! v1.0
+                Snake! v1.01 
             </h1>
             
-            <div class="prose max-w-none text-slate-700 leading-relaxed space-y-6">
-                <!-- Status Banner -->
-               <!-- <p class="text-lg bg-amber-50 border-l-4 border-amber-400 p-4 text-amber-900 rounded-r-md font-medium">
-                    Under Developement...
-                </p>  -->
+          <!--  <div class="prose max-w-none text-slate-700 leading-relaxed space-y-6">
+                <p class="text-lg bg-amber-50 border-l-4 border-amber-400 p-4 text-amber-900 rounded-r-md font-medium">
+                    Under Developement... Banner
+                </p> -->
+
+            <!--Begin Login Buttons-->
+
+<!-- Auth Modal Overlay -->
+<div id="auth-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeAuthModal()">&times;</span>
+        <h2 id="modal-title" style="margin-top: 0; color: #fff;">Sign In</h2>
+        
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+            <!-- Username field only shows during Sign Up -->
+            <div id="username-field-container" style="display: none;">
+                <label for="modal-username">Username (Max 7 chars):</label>
+                <input type="text" id="modal-username" maxlength="7" placeholder="CoolGamer">
+            </div>
+
+            <label for="modal-email">Email:</label>
+            <input type="email" id="modal-email" required placeholder="gamer@example.com">
+
+            <label for="modal-password">Password:</label>
+            <input type="password" id="modal-password" required placeholder="••••••••">
+
+            <button type="submit" id="auth-submit-btn" class="arcade-btn-primary">Sign In</button>
+        </form>
+
+        <p class="auth-toggle-text">
+            <span id="toggle-prompt">Don't have an account?</span> 
+            <a href="#" onclick="toggleAuthMode(event)" id="toggle-link">Sign Up</a>
+        </p>
+    </div>
+</div>
+
+            <!--End Login Buttons-->
 
                 <!-- GAME CONTAINER UI -->
                 <div class="flex flex-col items-center bg-white p-6 rounded-xl shadow-inner text-black not-prose">
@@ -141,6 +314,191 @@
 
     const { createClient } = supabase;
     const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    //Bigin Login Section 
+    
+    // Global user state
+let currentUser = null;
+let userProfile = null;
+let isSignUpMode = false; // Tracks whether modal is in Sign In or Sign Up mode
+
+// 1. Check for an active session when the page loads
+async function initAuth() {
+    try {
+        const { data: { session }, error } = await db.auth.getSession();
+        if (error) throw error;
+
+        if (session) {
+            currentUser = session.user;
+            await fetchUserProfile(currentUser.id);
+            updateAuthUI();
+        }
+    } catch (err) {
+        console.error("Error checking auth session:", err);
+    }
+}
+
+// 2. Fetch user profile stats (apples, skin, username) from Supabase
+async function fetchUserProfile(userId) {
+    try {
+        const { data, error } = await db
+            .from('user_profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
+
+        if (error) throw error;
+        userProfile = data;
+        console.log("Loaded profile:", userProfile);
+    } catch (err) {
+        console.error("Error fetching user profile:", err);
+    }
+}
+
+// Save updated apple count to Supabase
+async function saveAppleToDatabase() {
+    if (!currentUser || !userProfile) return;
+
+    try {
+        const { error } = await db
+            .from('user_profiles')
+            .update({ total_apples_eaten: userProfile.total_apples_eaten })
+            .eq('id', currentUser.id);
+
+        if (error) throw error;
+    } catch (err) {
+        console.error("Failed to sync apple count to database:", err);
+    }
+}
+
+// 3. Handle Form Submission (Both Sign In & Sign Up)
+async function handleAuthSubmit(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('modal-email').value.trim();
+    const password = document.getElementById('modal-password').value;
+    const usernameInput = document.getElementById('modal-username').value.trim();
+
+    try {
+        if (isSignUpMode) {
+            // --- SIGN UP ---
+            if (!usernameInput) {
+                alert("Please enter a username.");
+                return;
+            }
+
+            const { data, error } = await db.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        username: usernameInput.slice(0, 15) // Enforce max 15 chars
+                    }
+                }
+            });
+
+            if (error) throw error;
+            
+            alert("Account created successfully! Check your email to confirm if required, or log in.");
+            toggleAuthMode(); // Switch back to sign-in view
+
+        } else {
+            // --- SIGN IN ---
+            const { data, error } = await db.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (error) throw error;
+
+            currentUser = data.user;
+            await fetchUserProfile(currentUser.id);
+            updateAuthUI();
+            closeAuthModal();
+            
+            console.log("Logged in successfully as:", userProfile ? userProfile.username : currentUser.email);
+        }
+    } catch (err) {
+        alert("Authentication Error: " + err.message);
+        console.error(err);
+    }
+}
+
+// 4. Handle Logout
+async function handleLogout() {
+    try {
+        const { error } = await db.auth.signOut();
+        if (error) throw error;
+
+        currentUser = null;
+        userProfile = null;
+        updateAuthUI();
+        console.log("Logged out successfully");
+    } catch (err) {
+        console.error("Error logging out:", err);
+    }
+}
+
+// 5. Update UI elements based on login state (safely checks if elements exist)
+function updateAuthUI() {
+    const authBtn = document.getElementById('auth-btn');
+    const profileDisplay = document.getElementById('user-profile-display');
+    const usernameDisplay = document.getElementById('display-username');
+    const applesDisplay = document.getElementById('display-apples');
+
+    if (!authBtn || !profileDisplay) return; // Skip if HTML elements aren't loaded yet
+
+    if (currentUser && userProfile) {
+        authBtn.style.display = 'none';
+        profileDisplay.style.display = 'inline-block';
+        usernameDisplay.textContent = userProfile.username;
+        applesDisplay.textContent = `🍎 ${userProfile.total_apples_eaten}`;
+    } else {
+        authBtn.style.display = 'inline-block';
+        profileDisplay.style.display = 'none';
+    }
+}
+
+// 6. Modal Toggle & Control Helpers
+function openAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function toggleAuthMode(event) {
+    if (event) event.preventDefault();
+    isSignUpMode = !isSignUpMode;
+
+    const modalTitle = document.getElementById('modal-title');
+    const submitBtn = document.getElementById('auth-submit-btn');
+    const usernameContainer = document.getElementById('username-field-container');
+    const togglePrompt = document.getElementById('toggle-prompt');
+    const toggleLink = document.getElementById('toggle-link');
+
+    if (isSignUpMode) {
+        modalTitle.textContent = "Create Account";
+        submitBtn.textContent = "Sign Up";
+        usernameContainer.style.display = "block";
+        togglePrompt.textContent = "Already have an account?";
+        toggleLink.textContent = "Sign In";
+    } else {
+        modalTitle.textContent = "Sign In";
+        submitBtn.textContent = "Sign In";
+        usernameContainer.style.display = "none";
+        togglePrompt.textContent = "Don't have an account?";
+        toggleLink.textContent = "Sign Up";
+    }
+}
+
+// Run session check on script load
+initAuth();
+
+//End Login Section
       
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
@@ -255,12 +613,21 @@
        
               localStorage.setItem("snakeHighScores", JSON.stringify(highScores));
 
-              hasBeatenHighScore = true; // <--- Add this line here  
-                    //OLD
-                           // if (score > highScore) {
-                           //     highScore = score;
-                          //     highScoreEl.textContent = highScore;
+              hasBeatenHighScore = true; // <--- Add this line here   
             }
+
+            // Sync total apples eaten for logged-in users
+            if (currentUser && userProfile) {
+                userProfile.total_apples_eaten += 1;
+                
+                const applesDisplay = document.getElementById('display-apples');
+                if (applesDisplay) {
+                    applesDisplay.textContent = `🍎 ${userProfile.total_apples_eaten}`;
+                }
+
+                saveAppleToDatabase();
+            }
+
             spawnFood();
         } else {
             snake.pop();
@@ -443,6 +810,35 @@
     // Call it right when the page loads to populate the board
     loadLeaderboards();
 </script>
+
+<!-- Auth Modal Overlay -->
+<div id="auth-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeAuthModal()">&times;</span>
+        <h2 id="modal-title" style="margin-top: 0; font-size: 18px; font-weight: bold;">Sign In</h2>
+        
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+            <!-- Username field (only shows during Sign Up) -->
+            <div id="username-field-container" style="display: none;">
+                <label for="modal-username">Username (Max 7 chars):</label>
+                <input type="text" id="modal-username" maxlength="7" placeholder="CoolGamer">
+            </div>
+
+            <label for="modal-email">Email:</label>
+            <input type="email" id="modal-email" required placeholder="gamer@example.com">
+
+            <label for="modal-password">Password:</label>
+            <input type="password" id="modal-password" required placeholder="••••••••">
+
+            <button type="submit" id="auth-submit-btn" class="arcade-btn-primary">Sign In</button>
+        </form>
+
+        <p class="auth-toggle-text">
+            <span id="toggle-prompt">Don't have an account?</span> 
+            <a href="#" onclick="toggleAuthMode(event)" id="toggle-link">Sign Up</a>
+        </p>
+    </div>
+</div>
 
 </body>
 </html>
