@@ -5,77 +5,227 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
+        .speed-btn.active {
+            background-color: #3d3898;
+            color: #ffffff;
+        }
+            /* Auth Buttons */
+.arcade-btn {
+    background-color: #0f172a;
+    color: #ffffff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.arcade-btn:hover {
+    background-color: #1e293b;
+}
+
+.arcade-btn-small {
+    background-color: #ef4444;
+    color: #ffffff;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.arcade-btn-small:hover {
+    background-color: #dc2626;
+}
+
+/* Auth Modal Popup */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    padding: 24px;
+    width: 320px;
+    border-radius: 12px;
+    color: #ffffff;
+    position: relative;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.close-modal:hover {
+    color: #ffffff;
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #ffffff;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: #10b981;
+}
+
+.arcade-btn-primary {
+    background-color: #10b981;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.arcade-btn-primary:hover {
+    background-color: #059669;
+}
+
+.auth-toggle-text {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.auth-toggle-text a {
+    color: #34d399;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-toggle-text a:hover {
+    text-decoration: underline;
+}
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col justify-between antialiased">
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
 
-   
-<!-- ========================================================= -->
-<!--                                      |                    -->
-<!-- HEADER & NAVIGATION SECTION          V                    -->
-<!-- ========================================================= -->
-
-
- <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
+    <!-- HEADER & NAVIGATION SECTION -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 w-full">
         <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="font-bold text-xl tracking-tight text-slate-800 hover:text-slate-600 transition-colors">
+            <a href="index.html" class="font-bold text-xl tracking-tight text-slate-900">
                 MySite
             </a>
             <nav>
-                <ul class="flex space-x-6 text-sm font-medium">
-                    <li><a href="index.html" class="text-slate-600 hover:text-slate-900 transition-colors">Home</a></li>
-
-                    <li><a href="About.html" class="text-blue-600 font-semibold">About</a></li>
-
-                    <li><a href="untitled1.html" class="text-blue-600 font-semibold">Untitled 1</a></li>
-
-                    <li><a href="Testpage.html" class="text-indigo-600 font-semibold transition-colors">Testpage</a></li>
-
+                <ul class="flex items-center space-x-6 font-medium">
+                    <li><a href="index.html" class="text-slate-600 hover:text-slate-900">Home</a></li>
+                    <li><a href="untitled1.html" class="text-slate-900 font-semibold">Snake</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <main class="max-w-3xl mx-auto w-full px-6 py-12 flex-grow space-y-8">
+        
+<!-- PRIMARY CONTAINER CARD WITH HEADSHOT -->
+<section class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-slate-200">
+    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 md:gap-8">
+        
+        <!-- HEADSHOT IMAGE -->
+        <div class="flex-shrink-0">
+            <img src="images/Headshot.jpg" alt="Israel Miranda" class="w-32 h-32 md:w-36 md:h-36 rounded-2xl object-cover shadow-sm border border-slate-200">        
+        </div>
 
-<!-- ========================================================= -->
-<!--                                      |                    -->
-<!-- Body Text                            V                    -->
-<!-- ========================================================= -->
+        <!-- TEXT CONTENT -->
+        <div class="flex-grow text-center sm:text-left">
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-center sm:text-left text-slate-900 mb-3">
+    Israel Miranda
+</h1>
+            <p class="text-slate-600 leading-relaxed">
+                Graduating Computer information Systems student Webber International University and Mercer County Community College Alumni (Cybersecurity).  
+                In addition to my programming, web development, and database classes, I enjoy finding ways to make the all of them talk to eachother in a full tech stack.
+                
+            </p>
+        </div>
 
+    </div>
+</section>
 
+    <section class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-slate-200">
+    <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-center text-slate-900 mb-6">
+        Experience
+    </h1>
+    
+    <h2 class="text-lg font-bold text-slate-900 text-center mb-2">
+        Shift Leader | Jersey Mike’s Subs | 2022 – Present
+    </h2>
+    <hr class="my-4 border-slate-200">
+    <ul class="list-disc list-inside space-y-2 text-slate-600 mb-8">
+        <li>Lead employees to elevate the customer experience, fulfill accurate orders, and maintain company standards.</li>
+        <li>In my 7th location, store has now gone from 17 corporate audit points to a 2-point review.</li>
+    </ul>
 
-    <main class="max-w-3xl mx-auto w-full px-6 py-12 flex-grow">
-        <section class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-slate-200">
-            <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-6">
-                Home
-            </h1>
-            
-            <div class="prose max-w-none text-slate-700 leading-relaxed space-y-4">
-                <!-- User content placeholder -->
-                <p class="text-lg bg-amber-50 border-l-4 border-amber-400 p-4 text-amber-900 rounded-r-md font-medium">
-                 
-                </p>
-		<p class="text-lg p-4 text-slate-800 font-medium">
-                   Blah Blah Blah
-                </p>
+    <h2 class="text-lg font-bold text-slate-900 text-center mb-2">
+        Sports Information Assistant | Webber International University | 2025 – 2026
+    </h2>
+    <hr class="my-4 border-slate-200">
+    <ul class="list-disc list-inside space-y-2 text-slate-600">
+        <li>Manage live-stream broadcasting hardware, network connectivity, and real-time statistical tracking for collegiate athletic events.</li>
+        <li>Troubleshoot audio/visual and streaming software issues on the fly under time constraints.</li>
+    </ul>
+</section>
 
-            </div>
+        <!-- CARD 2: Optional Secondary Container (Matches the Top 3 Leaderboard card) -->
+        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-lg font-bold text-slate-900 text-center mb-4">
+                Technical Skills
+            </h2>
+            <p class="text-slate-600 text-left">
+                •	Operating Systems & Hardware: Windows, Windows Server, Linux, macOS, Virtual Machines (VMs), PC Hardware Assembly, Diagnostics & Troubleshooting <br>
+                •	Networking & Administration: Cisco Routing & Switching, Active Directory (Account Management & Configuration), Packet Sniffing <br>
+                •	Cybersecurity & Compliance: Vulnerability Assessment, Password Auditing, Reconnaissance, Data Recovery & Secure Disposal, Legal/Corporate Compliance <br>
+                •	Databases & Programming: SQL (Queries, Data Modeling & Presentation), Python, C#, Java, HTML, Microsoft Office Suite <br>  
+            </p>
         </section>
+
     </main>
 
-<!-- ========================================================= -->
-<!--                                      |                    -->
-<!-- Footer                               V                    -->
-<!-- ========================================================= -->
-
-    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+     <footer class="bg-white border-t border-slate-200 py-6 mt-12">
         <div class="max-w-4xl mx-auto px-6 text-center text-sm text-slate-500">
             &copy; 2026 MySite. All rights reserved.
         </div>
